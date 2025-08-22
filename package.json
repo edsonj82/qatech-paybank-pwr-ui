@@ -1,0 +1,22 @@
+{
+  "name": "qatech-paybank-pwr-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edsonj82/qatech-paybank-pwr-ui.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edsonj82/qatech-paybank-pwr-ui/issues"
+  },
+  "homepage": "https://github.com/edsonj82/qatech-paybank-pwr-ui#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.0"
+  }
+}
