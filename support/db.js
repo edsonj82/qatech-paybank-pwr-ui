@@ -1,0 +1,16 @@
+import pgPromise from 'pg-promise'
+
+const pgp = pgPromise()
+const db = pgp('postgresql://dba:dba@paybank-db:/UserDB')
+
+export async function getCode2FA() {
+    const query = `
+        SELECT code
+        FROM public."TwoFactorCode"
+        ORDER BY id DESC
+        LIMIT 1;
+    `
+
+    const result = await db.oneOrNone(query)
+    return result.code
+}
