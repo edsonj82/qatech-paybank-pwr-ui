@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { getCode2FA } from '../support/db';
 import { LoginPage } from '../pages/LoginPage';
+import { DashBoardPage } from '../pages/DashBoardPage';
 
 test('Invalid login', async ({ page }) => {
 
@@ -23,6 +24,7 @@ test('Invalid login', async ({ page }) => {
 test('Should access the user account', async ({ page }) => {
 
   const loginPage = new LoginPage(page)
+  const dashBoardPage = new DashBoardPage(page)
 
   const user = {
     cpf: '00000014141',
@@ -42,5 +44,5 @@ test('Should access the user account', async ({ page }) => {
   //TODO: alter
   await page.waitForTimeout(2000)
 
-  expect(await loginPage.getBalance()).toHaveText('R$ 5.000,00')
+  expect(await dashBoardPage.getBalance()).toHaveText('R$ 5.000,00')
 });

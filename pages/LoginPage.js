@@ -24,7 +24,4 @@ export class LoginPage {
         await this.page.getByRole('button', { name: 'Verificar' }).click();
     }
 
-    async getBalance() {
-        return this.page.locator('#account-balance')
-    }
 }
