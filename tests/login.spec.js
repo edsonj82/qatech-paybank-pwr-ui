@@ -41,11 +41,16 @@ test('Should access the user account', async ({ page }) => {
   }
   await page.getByRole('button', { name: 'Continuar' }).click();
 
+  //TODO: alter
   await page.waitForTimeout(2000)
   const code = await getCode2FA()
 
   await page.getByRole('textbox', { name: '000000' }).fill(code);
   await page.getByRole('button', { name: 'Verificar' }).click();
 
+  //TODO: alter
   await page.waitForTimeout(2000)
+
+  await expect(page.locator('#account-balance')).toHaveText('R$ 5.000,00')
+  
 });
