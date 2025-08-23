@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { getCode2FA } from '../support/db';
+import { LoginPage } from '../pages/LoginPage';
 
 test('Invalid login', async ({ page }) => {
 
@@ -8,49 +9,38 @@ test('Invalid login', async ({ page }) => {
     password: '147258'
   }
 
-  await page.goto('http://paybank-mf-auth:3000/');
+  await loginPage.accessPage()
+  await loginPage.getCPF(user.cpf)
+  await loginPage.getPassword(user.password)
+  await loginPage.getCode('123456')
 
-  await page.getByRole('textbox', { name: 'Digite seu CPF' }).fill(user.cpf);
-  await page.getByRole('button', { name: 'Continuar' }).click();
-
-  for (const digit of user.password) {
-    await page.getByRole('button', { name: digit }).click();
-  }
-  await page.getByRole('button', { name: 'Continuar' }).click();
-
-  await page.getByRole('textbox', { name: '000000' }).fill('123456');
-  await page.getByRole('button', { name: 'Verificar' }).click();
+  //TODO: alter
+  await page.waitForTimeout(2000)
 
   await expect(page.locator('span')).toContainText('Código inválido. Por favor, tente novamente.');
 });
 
 test('Should access the user account', async ({ page }) => {
 
+  const loginPage = new LoginPage(page)
+
   const user = {
     cpf: '00000014141',
     password: '147258'
   }
 
-  await page.goto('http://paybank-mf-auth:3000/');
-
-  await page.getByRole('textbox', { name: 'Digite seu CPF' }).fill(user.cpf);
-  await page.getByRole('button', { name: 'Continuar' }).click();
-
-  for (const digit of user.password) {
-    await page.getByRole('button', { name: digit }).click();
-  }
-  await page.getByRole('button', { name: 'Continuar' }).click();
+  await loginPage.accessPage()
+  await loginPage.getCPF(user.cpf)
+  await loginPage.getPassword(user.password)
 
   //TODO: alter
   await page.waitForTimeout(2000)
+
   const code = await getCode2FA()
-
-  await page.getByRole('textbox', { name: '000000' }).fill(code);
-  await page.getByRole('button', { name: 'Verificar' }).click();
+  await loginPage.getCode(code)
 
   //TODO: alter
   await page.waitForTimeout(2000)
 
-  await expect(page.locator('#account-balance')).toHaveText('R$ 5.000,00')
-  
+  expect(await loginPage.getBalance()).toHaveText('R$ 5.000,00')
 });
