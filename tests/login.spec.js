@@ -43,5 +43,6 @@ test('login successfully', async ({ page }) => {
 
   // TODO : substituir por waitForResponse
   await page.waitForTimeout(2000);
-  await expect(page.locator('#account-balance')).toHaveText('R$ 5.000,00');
+  expect(await loginPage.getBalance()).toHaveText('R$ 5.000,00');
+
 });
