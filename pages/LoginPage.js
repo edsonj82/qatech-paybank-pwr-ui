@@ -22,10 +22,6 @@ export class LoginPage {
     async fillCode2FA(code) {
         await this.page.getByRole('textbox', { name: '000000' }).fill(code);
         await this.page.getByRole('button', { name: 'Verificar' }).click();
-    }
-    
-    async getBalance() {
-        return this.page.locator('#account-balance');
-    }
+    }   
 }
 
