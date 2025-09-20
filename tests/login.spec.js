@@ -1,54 +1,47 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 import { getCode2FA } from '../support/db';
+import { LoginPage } from '../pages/LoginPage';
+
 
 test('invalid login', async ({ page }) => {
+
+  const loginPage = new LoginPage(page);
+
   const user = {
     cpf: '00000014141',
     password: '147258'
   }
 
-  await page.goto('http://paybank-mf-auth:3000/');
+  await loginPage.homePage();
 
-  await page.getByRole('textbox', { name: 'Digite seu CPF' }).fill(user.cpf);
-  await page.getByRole('button', { name: 'Continuar' }).click();
+  await loginPage.fillCPF(user.cpf);
+  await loginPage.fillPassword(user.password);
+  await loginPage.fillCode2FA('123456');
 
-  for (const digit of user.password) {
-    await page.getByRole('button', { name: digit }).click();
-  }
-
-  await page.getByRole('button', { name: 'Continuar' }).click();
-
-  await page.getByRole('textbox', { name: '000000' }).fill('123456');
-  await page.getByRole('button', { name: 'Verificar' }).click();
   await expect(page.locator('span')).toContainText('Código inválido. Por favor, tente novamente.');
 });
 
 test('login successfully', async ({ page }) => {
+
+  const loginPage = new LoginPage(page);
+
   const user = {
     cpf: '00000014141',
     password: '147258'
   }
 
-  await page.goto('http://paybank-mf-auth:3000/');
-
-  await page.getByRole('textbox', { name: 'Digite seu CPF' }).fill(user.cpf);
-  await page.getByRole('button', { name: 'Continuar' }).click();
-
-  for (const digit of user.password) {
-    await page.getByRole('button', { name: digit }).click();
-  }
-  await page.getByRole('button', { name: 'Continuar' }).click();
+  await loginPage.homePage();
+  await loginPage.fillCPF(user.cpf);
+  await loginPage.fillPassword(user.password);
 
   // TODO : substituir por waitForResponse
   await page.waitForTimeout(2000);
-  
-  const code = await getCode2FA();
 
-  await page.getByRole('textbox', { name: '000000' }).fill(code);
-  await page.getByRole('button', { name: 'Verificar' }).click();
-// TODO : substituir por waitForResponse
+  const code = await getCode2FA();
+  await loginPage.fillCode2FA(code);
+
+  // TODO : substituir por waitForResponse
   await page.waitForTimeout(2000);
   await expect(page.locator('#account-balance')).toHaveText('R$ 5.000,00');
-
 });
