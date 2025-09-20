@@ -49,5 +49,6 @@ test('login successfully', async ({ page }) => {
   await page.getByRole('button', { name: 'Verificar' }).click();
 // TODO : substituir por waitForResponse
   await page.waitForTimeout(2000);
+  await expect(page.locator('#account-balance')).toHaveText('R$ 5.000,00');
 
 });
