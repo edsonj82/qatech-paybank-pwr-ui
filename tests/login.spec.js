@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 import { getCode2FA } from '../support/db';
 import { LoginPage } from '../pages/LoginPage';
 import { DashBoardPage } from '../pages/DashBoardPage';
+import { TIMEOUT } from 'dns';
 
 
 test('invalid login', async ({ page }) => {
@@ -37,14 +38,13 @@ test('login successfully', async ({ page }) => {
   await loginPage.fillCPF(user.cpf);
   await loginPage.fillPassword(user.password);
 
-  // TODO : substituir por waitForResponse
-  await page.waitForTimeout(2000);
+  //CHECKPOINT
+  await page.getByRole('heading', { name: 'Verificação em duas etapas' })
+    .waitFor({ timeout: 2000 });
 
   const code = await getCode2FA();
   await loginPage.fillCode2FA(code);
-
-  // TODO : substituir por waitForResponse
-  await page.waitForTimeout(2000);
-  expect(await dashBoardPage.getBalance()).toHaveText('R$ 5.000,00');
+  
+  await expect(await dashBoardPage.getBalance()).toHaveText('R$ 5.000,00');
 
 });
