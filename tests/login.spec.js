@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { getCode2FA } from '../support/db';
 import { LoginPage } from '../pages/LoginPage';
 import { DashBoardPage } from '../pages/DashBoardPage';
-import { TIMEOUT } from 'dns';
+import { cleanJobs, getJob } from '../support/redis';
 
 
 test('invalid login', async ({ page }) => {
@@ -34,6 +34,9 @@ test('login successfully', async ({ page }) => {
     password: '147258'
   }
 
+  //limpa fila do redis
+  await cleanJobs()
+
   await loginPage.homePage();
   await loginPage.fillCPF(user.cpf);
   await loginPage.fillPassword(user.password);
@@ -42,9 +45,13 @@ test('login successfully', async ({ page }) => {
   await page.getByRole('heading', { name: 'Verificação em duas etapas' })
     .waitFor({ timeout: 2000 });
 
-  const code = await getCode2FA(user.cpf);
+  // chamada para o banco
+  //const code = await getCode2FA(user.cpf);
+  // chamda para a capturar o codigo na fila do redis
+  const code = await getJob();
+
   await loginPage.fillCode2FA(code);
-  
+
   await expect(await dashBoardPage.getBalance()).toHaveText('R$ 5.000,00');
 
 });
