@@ -7,3 +7,4 @@ export class DashBoardPage {
         return this.page.locator('#account-balance');
     }
 }
+ 

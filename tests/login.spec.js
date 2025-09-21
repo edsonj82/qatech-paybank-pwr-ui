@@ -42,7 +42,7 @@ test('login successfully', async ({ page }) => {
   await page.getByRole('heading', { name: 'Verificação em duas etapas' })
     .waitFor({ timeout: 2000 });
 
-  const code = await getCode2FA();
+  const code = await getCode2FA(user.cpf);
   await loginPage.fillCode2FA(code);
   
   await expect(await dashBoardPage.getBalance()).toHaveText('R$ 5.000,00');
